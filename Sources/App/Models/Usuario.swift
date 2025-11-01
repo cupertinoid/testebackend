@@ -1,7 +1,7 @@
 import Vapor
 import Fluent
 
-final class Usuario: Model, Content {
+final class Usuario: Model, Content, @unchecked Sendable {
     static let schema = "usuarios"
 
     @ID(custom: "id")
@@ -26,7 +26,6 @@ final class Usuario: Model, Content {
     }
 }
 
-// DTO pra criação (pra não obrigar o cara a mandar id)
 struct CreateUsuarioRequest: Content {
     let nome: String?
     let email: String?
