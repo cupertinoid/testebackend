@@ -3,15 +3,11 @@ import Fluent
 import FluentPostgresDriver
 
 public func configure(_ app: Application) throws {
+    // Porta Render
+    let port = Environment.get("PORT").flatMap(Int.init) ?? 8080
+    app.http.server.configuration.port = port
 
-    // Porta (Render usa $PORT)
-    if let portStr = Environment.get("PORT"), let port = Int(portStr) {
-        app.http.server.configuration.port = port
-    } else {
-        app.http.server.configuration.port = 8080
-    }
-
-    // Postgres config
+    // Configuração Postgres
     guard
         let hostname = Environment.get("POSTGRES_HOST"),
         let portStr = Environment.get("POSTGRES_PORT"),
@@ -23,23 +19,16 @@ public func configure(_ app: Application) throws {
         fatalError("Missing Postgres env vars")
     }
 
-    let tlsRequired = Environment.get("POSTGRES_TLS") ?? "require"
-    let tlsConfig: PostgresConfiguration.TLSConfiguration = (
-        tlsRequired == "require"
-    ) ? .require : .disable
-
     app.databases.use(
         .postgres(
-            configuration: .init(
+            configuration: SQLPostgresConfiguration(
                 hostname: hostname,
                 port: port,
                 username: username,
                 password: password,
                 database: database,
-                tls: tlsConfig
-            ),
-            maxConnectionsPerEventLoop: 10,
-            connectionPoolTimeout: .seconds(10)
+                tls: .require
+            )
         ),
         as: .psql
     )
