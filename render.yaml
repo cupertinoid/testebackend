@@ -1,11 +1,11 @@
 services:
   - type: web
     name: vapor-backend
-    env: swift
     plan: free
-    buildCommand: swift build
-    startCommand: swift run Run serve --env production
+    env: docker
     autoDeploy: true
+    buildCommand: "" # Docker cuida disso
+    startCommand: "" # idem
 
     envVars:
       - key: PORT
