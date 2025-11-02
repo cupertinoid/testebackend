@@ -26,6 +26,9 @@ WORKDIR /run
 # Copia o binário compilado
 COPY --from=builder /app/.build/release/Run .
 
+# 🔥 Copia também as bibliotecas Swift do ambiente de build
+COPY --from=builder /usr/lib/swift /usr/lib/swift
+
 # Porta padrão
 ENV PORT=8080
 EXPOSE 8080
